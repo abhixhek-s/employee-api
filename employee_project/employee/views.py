@@ -12,9 +12,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
+        many = isinstance(request.data, list)
 
-        return Response({
-            "type": str(type(request.data)),
-            "is_list": isinstance(request.data, list),
-            "data": request.data
-        })
+        serializer = self.get_serializer(
+            data=request.data,
+            many=many
+        )
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
