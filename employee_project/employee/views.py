@@ -12,7 +12,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        # Check if the request contains multiple employees
+
+        print("Bulk create called")
+        print("Type:", type(request.data))
+        print("Data:", request.data)
+        print("Is list:", isinstance(request.data, list))
         if isinstance(request.data, list):
             serializer = self.get_serializer(data=request.data, many=True)
         else:
